@@ -116,3 +116,7 @@ src/test/java/.../edirecon   JUnit 5 tests
 sample-data/env-a, env-b     synthetic client lists and EDI files for two environments
 docs/sample-report.md        example report
 ```
+
+## License
+
+Copyright © 2026 Aditya Tripathi. All rights reserved. The code is published for viewing only; see [LICENSE](LICENSE). Security reports: see [SECURITY.md](SECURITY.md).
