@@ -1,0 +1,16 @@
+# One-shot run of the EDI reconciliation agent. The report lands in ./out.
+#   docker compose run --rm agent                                    # sample data, 'medical'
+#   docker compose run --rm agent --lob dental --out /out
+#   REFERENCE_DIR=/data/qa CANDIDATE_DIR=/data/uat docker compose run --rm agent \
+#     --reference /input/reference --candidate /input/candidate --lob medical --out /out
+name: edi-reconciliation-agent
+services:
+  agent:
+    build: .
+    image: edi-reconciliation-agent:latest
+    # On Linux, run as yourself so ./out stays yours: AGENT_USER="$(id -u):$(id -g)" docker compose run --rm agent
+    user: ${AGENT_USER:-10001:10001}
+    volumes:
+      - ./out:/out
+      - ${REFERENCE_DIR:-./sample-data/env-a}:/input/reference:ro
+      - ${CANDIDATE_DIR:-./sample-data/env-b}:/input/candidate:ro
