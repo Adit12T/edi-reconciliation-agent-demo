@@ -38,7 +38,7 @@ client lists ─▶ clients enabled in both ─▶ load EDI files per line of bu
 
 ## Run it
 
-Requires JDK 17 or newer. There are no runtime dependencies.
+Requires JDK 17 or newer (or just Docker, see below). There are no runtime dependencies.
 
 With Maven:
 
@@ -72,6 +72,25 @@ Report: out/report.md
 ```
 
 The full report for the sample data is in [docs/sample-report.md](docs/sample-report.md).
+
+### With Docker
+
+No JDK or Maven needed. The image compiles the agent with the JDK alone and runs it as a non-root user.
+
+```bash
+docker compose run --rm agent                         # sample environments, 'medical', report in ./out
+docker compose run --rm agent --lob dental --out /out
+```
+
+Your own environments (mounted read-only):
+
+```bash
+REFERENCE_DIR=/data/qa CANDIDATE_DIR=/data/uat docker compose run --rm agent \
+  --reference /input/reference --candidate /input/candidate --lob medical --out /out
+```
+
+Without Compose: `docker build -t edi-reconciliation-agent . && docker run --rm -v "$PWD/out:/out" edi-reconciliation-agent`.
+On Linux, add `AGENT_USER="$(id -u):$(id -g)"` before `docker compose` (or `--user` with `docker run`) so the files in `./out` belong to you.
 
 ### Options
 
@@ -115,6 +134,7 @@ src/main/java/.../edirecon   the reconciler (EdiReconciler is the entry point)
 src/test/java/.../edirecon   JUnit 5 tests
 sample-data/env-a, env-b     synthetic client lists and EDI files for two environments
 docs/sample-report.md        example report
+Dockerfile, docker-compose.yml container build and one-shot run
 ```
 
 ## License
